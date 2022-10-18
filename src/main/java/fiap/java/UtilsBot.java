@@ -21,19 +21,20 @@ public class UtilsBot {
         String chatId = update.getMessage().getChatId().toString();
         String resposta = "";
 
-        if (textoMensagem.startsWith("ola") || 
-            textoMensagem.startsWith("olá") || 
-            textoMensagem.startsWith("oi")  || 
-            textoMensagem.startsWith("/start")) {
-            resposta = "\uD83E\uDD16 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida!\n" +
-                       "Utilize um dos comandos:\nolá\ndata\nhora\nquem é você?";
+        if (textoMensagem.startsWith("ola") ||
+                textoMensagem.startsWith("olá") ||
+                textoMensagem.startsWith("oi") ||
+                textoMensagem.startsWith("/start")) {
+            resposta = "\u2601 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida!\n"
+                    +
+                    "Utilize um dos comandos:\nolá\ndata\nhora\nquem é você?";
 
         } else if ("data".equals(textoMensagem)) {
             resposta = getData();
         } else if (textoMensagem.startsWith("hora")) {
             resposta = getHora();
         } else if (textoMensagem.startsWith("quem é voc") || textoMensagem.startsWith("quem e voce")) {
-            resposta = "\uD83E\uDD16 Eu sou a WENDY e sou um bot.";
+            resposta = "\u2601 Eu sou a WENDY e sou um bot.";
         } else if (textoMensagem.startsWith("/help")) {
             resposta = "Utilize um dos comandos:\nolá\ndata\nhora\nquem é você?";
         } else {
