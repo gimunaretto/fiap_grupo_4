@@ -8,6 +8,9 @@ public class App
 {
     public static void main( String[] args )
     {
+
+        System.out.println( UtilsBot.getDiaSemana() + ", " + UtilsBot.getData());
+
         try {
             // Instanciar API do bot do Telegram;
             TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
