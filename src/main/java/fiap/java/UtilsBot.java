@@ -9,6 +9,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -50,13 +53,18 @@ public class UtilsBot {
     public static String sendWeather(String chatId, String textoMensagem) {
         JSONObject dadosTemperatura = null;
         Double temperatura = null;
+        Object ipCidade = null;
         Object cidade = null;
         String resposta = null;
 
         try {
+            JSONObject enderecoIP = readJsonFromUrl("https://ipinfo.io/json");
+
+            ipCidade = enderecoIP.getString("city");
 
             JSONObject temperaturaAtual = readJsonFromUrl(
-                    "http://api.openweathermap.org/data/2.5/weather?q=zuerich&mode=json&units=metric&cnt=7&appid=1bbd858dca78c0ee3438a910b6e23fb4");
+                    "http://api.openweathermap.org/data/2.5/weather?q=" + ipCidade
+                            + "&mode=json&units=metric&cnt=7&appid=1bbd858dca78c0ee3438a910b6e23fb4&lang=pt_br");
 
             dadosTemperatura = temperaturaAtual.getJSONObject("main");
             temperatura = dadosTemperatura.getDouble("temp");
@@ -78,11 +86,14 @@ public class UtilsBot {
         String chatId = update.getMessage().getChatId().toString();
         String resposta = "";
 
-        if (textoMensagem.matches("\\b(?:ola|olá|oi|start)\\b")) {
+        Matcher ola = Pattern.compile("\\b(?:start)\\b").matcher(textoMensagem);
+        Matcher temperatura = Pattern.compile("\\b(?:tempo|clima|temperatura)\\b").matcher(textoMensagem);
+
+        if (ola.find()) {
             resposta = "\u2601 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida! "
                     + "Pode me perguntar sobre o clima, o dia, filmes em cartaz no cinema e até um pouco sobre mim se quiser! :3";
 
-        } else if (textoMensagem.matches("\\b(?:tempo|clima|temperatura)\\b")) {
+        } else if (temperatura.find()) {
             resposta = sendWeather(chatId, textoMensagem);
 
         } else {
