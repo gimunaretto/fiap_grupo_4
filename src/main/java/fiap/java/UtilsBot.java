@@ -86,7 +86,7 @@ public class UtilsBot {
         String chatId = update.getMessage().getChatId().toString();
         String resposta = "";
 
-        Matcher ola = Pattern.compile("\\b(?:start)\\b").matcher(textoMensagem);
+        Matcher ola = Pattern.compile("\\b(?:ol(a|à)|oi|start)\\b").matcher(textoMensagem);
         Matcher temperatura = Pattern.compile("\\b(?:tempo|clima|temperatura)\\b").matcher(textoMensagem);
 
         if (ola.find()) {
