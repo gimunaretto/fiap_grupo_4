@@ -19,14 +19,25 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class UtilsBot {
 
+    /**
+     * @return
+     */
     public static String getData() {
         return new SimpleDateFormat("dd/MM/yyyy").format(new Date());
     }
 
+    /**
+     * @return
+     */
     public static String getHora() {
         return new SimpleDateFormat("HH:mm:ss").format(new Date());
     }
 
+    /**
+     * @param rd
+     * @return
+     * @throws IOException
+     */
     private static String readAll(Reader rd) throws IOException {
         StringBuilder sb = new StringBuilder();
         int cp;
@@ -36,6 +47,12 @@ public class UtilsBot {
         return sb.toString();
     }
 
+    /**
+     * @param url
+     * @return
+     * @throws IOException
+     * @throws JSONException
+     */
     public static JSONObject readJsonFromUrl(String url) throws IOException,
             JSONException {
         InputStream is = new URL(url).openStream();
@@ -50,6 +67,11 @@ public class UtilsBot {
         }
     }
 
+    /**
+     * @param chatId
+     * @param textoMensagem
+     * @return
+     */
     public static String sendWeather(String chatId, String textoMensagem) {
         JSONObject dadosTemperatura = null;
         Double temperatura = null;
@@ -81,6 +103,10 @@ public class UtilsBot {
         }
     }
 
+    /**
+     * @param update
+     * @return
+     */
     static SendMessage responseBot(Update update) {
         String textoMensagem = update.getMessage().getText().toLowerCase();
         String chatId = update.getMessage().getChatId().toString();
