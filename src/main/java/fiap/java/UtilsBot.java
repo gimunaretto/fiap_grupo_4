@@ -8,9 +8,12 @@ import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Locale;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +26,11 @@ public class UtilsBot {
      * @return
      */
     public static String getData() {
-        return new SimpleDateFormat("dd/MM/yyyy").format(new Date());
+        LocalDate dataHoje = LocalDate.now();
+        return dataHoje.getDayOfMonth() + " de " +
+                dataHoje.getMonth().getDisplayName(TextStyle.FULL, new Locale("pt")) +
+                " de " +
+                dataHoje.getYear() + ".";
     }
 
     /**
@@ -31,6 +38,14 @@ public class UtilsBot {
      */
     public static String getHora() {
         return new SimpleDateFormat("HH:mm:ss").format(new Date());
+    }
+
+    /**
+     * @param update
+     * @return
+     */
+    public static String getDiaSemana() {
+        return LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("pt"));
     }
 
     /**
@@ -68,16 +83,13 @@ public class UtilsBot {
     }
 
     /**
-     * @param chatId
-     * @param textoMensagem
      * @return
      */
-    public static String sendWeather(String chatId, String textoMensagem) {
+    public static String sendWeather() {
         JSONObject dadosTemperatura = null;
         Double temperatura = null;
         Object ipCidade = null;
         Object cidade = null;
-        String resposta = null;
 
         try {
             JSONObject enderecoIP = readJsonFromUrl("https://ipinfo.io/json");
@@ -92,15 +104,22 @@ public class UtilsBot {
             temperatura = dadosTemperatura.getDouble("temp");
             cidade = temperaturaAtual.getString("name");
 
-            return resposta = "Ótima pergunta! A temperatura atual na cidade de " + cidade + " é: "
+            return "Ótima pergunta! A temperatura atual na cidade de " + cidade + " é: "
                     + temperatura
                     + "°";
 
         } catch (Exception e) {
 
-            return resposta = "Desculpe, não consigo te informar isso agora :(";
+            return "Desculpe, não consigo te informar isso agora :(";
 
         }
+    }
+
+    /**
+     * @return
+     */
+    public static String sendHours() {
+        return "Hoje é " + getDiaSemana() + ", e são: " + getHora();
     }
 
     /**
@@ -114,14 +133,16 @@ public class UtilsBot {
 
         Matcher ola = Pattern.compile("\\b(?:ol(a|à)|oi|start)\\b").matcher(textoMensagem);
         Matcher temperatura = Pattern.compile("\\b(?:tempo|clima|temperatura)\\b").matcher(textoMensagem);
+        Matcher horas = Pattern.compile("\\b(?:horas|hora|hor(a|à)rio)\\b").matcher(textoMensagem);
 
         if (ola.find()) {
             resposta = "\u2601 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida! "
                     + "Pode me perguntar sobre o clima, o dia, filmes em cartaz no cinema e até um pouco sobre mim se quiser! :3";
 
         } else if (temperatura.find()) {
-            resposta = sendWeather(chatId, textoMensagem);
-
+            resposta = sendWeather();
+        } else if (horas.find()) {
+            resposta = sendHours();
         } else {
             resposta = "Não entendi!\nPoderia repetir a pergunta novamente?";
         }
@@ -130,7 +151,6 @@ public class UtilsBot {
                 .text(resposta)
                 .chatId(chatId)
                 .build();
-
     }
 
 }
