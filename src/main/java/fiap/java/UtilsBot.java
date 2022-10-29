@@ -121,13 +121,13 @@ public class UtilsBot {
             temperatura = dadosTemperatura.getDouble("temp");
             cidade = temperaturaAtual.getString("name");
 
-            return "Ótima pergunta! A temperatura atual na cidade de " + cidade + " é: "
+            return "\u2601 Ótima pergunta! A temperatura atual na cidade de " + cidade + " é: "
                     + temperatura
                     + "°";
 
         } catch (Exception e) {
 
-            return "Desculpe, não consigo te informar isso agora :(";
+            return "\u2601 Desculpe, não consigo te informar isso agora :(";
 
         }
     }
@@ -136,7 +136,7 @@ public class UtilsBot {
      * @return
      */
     public static String sendHours() {
-        return "Hoje é " + getDiaSemana() + ", e são: " + getHora();
+        return "\u2601 Hoje é " + getDiaSemana().toLowerCase() + ", e agora são exatamente: " + getHora();
     }
 
     /**
@@ -145,8 +145,10 @@ public class UtilsBot {
     public static String sendWeek() {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         String dt_atual = formatter.format(new Date());
-        return "Hoje é " + LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("pt")) + ", "
-                + dt_atual;
+        return "\u2601 Hoje é "
+                + LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("pt")).toLowerCase()
+                + "! Dia "
+                + dt_atual + " :3";
     }
 
     /**
@@ -158,7 +160,7 @@ public class UtilsBot {
     public static String askGenero(String textoMensagem) {
         if (!solicitouFilmes) {
             solicitouFilmes = true;
-            return "Qual genero você deseja buscar? Tente algo como, Terror, Comédia, Suspense, Animação, Ação";
+            return "\u2601 Qual genero você deseja buscar? Tente algo como, Terror, Comédia, Suspense, Animação, Ação";
         } else {
             return sendFilmes(textoMensagem);
         }
@@ -189,10 +191,19 @@ public class UtilsBot {
         } else if (acao.find()) {
             resposta = "\u2022 Tudo Em Todo O Lugar Ao Mesmo Tempo\n\u2022 A Mulher Rei\n\u2022 Caça Implacável\n\u2022 Adão Negro\n\u2022 Pantera Negra: Wakanda Para Sempre";
         } else {
-            resposta = "Não encontrei o genero buscado :(\nPosso te auxiliar com outros generos caso queira...";
+            resposta = "\u2601 Não encontrei o genero buscado :(\nPosso te auxiliar com outros generos caso queira...";
         }
         solicitouFilmes = false;
         return resposta;
+    }
+
+    /**
+     * Retorna resposta ao pedido de desculpas
+     * 
+     * @return
+     */
+    public static String sendSorry() {
+        return "\u2601 Tudo bem, eu te desculpo dessa vez :3";
     }
 
     /**
@@ -201,7 +212,7 @@ public class UtilsBot {
      * @return
      */
     public static String askAge() {
-        return "Isso não é algo que você deveria perguntar à uma dama";
+        return "\u2601 Isso não é algo que você deveria perguntar à uma dama!";
     }
 
     /**
@@ -210,7 +221,7 @@ public class UtilsBot {
      * @return
      */
     public static String askTchau() {
-        return "Adorei conversar com você! Até a próxima S2";
+        return "\u2601 Adorei conversar com você! Até a próxima S2";
     }
 
     /**
@@ -222,13 +233,16 @@ public class UtilsBot {
         String chatId = update.getMessage().getChatId().toString();
         String resposta = "";
 
-        Matcher ola = Pattern.compile("\\b(?:ol(a|à)|oi|start)\\b").matcher(textoMensagem);
+        Matcher ola = Pattern.compile("\\b(?:help|voltei|start)\\b").matcher(textoMensagem);
         Matcher temperatura = Pattern.compile("\\b(?:tempo|clima|temperatura)\\b").matcher(textoMensagem);
         Matcher horas = Pattern.compile("\\b(?:horas|hora|hor(a|à)rio)\\b").matcher(textoMensagem);
         Matcher dia = Pattern.compile("\\b(?:dia|hoje)\\b").matcher(textoMensagem);
         Matcher filme = Pattern.compile("\\b(?:filme|cartaz|cinema|filmes)\\b").matcher(textoMensagem);
         Matcher idade = Pattern.compile("\\b(?:idade|ano|anos)\\b").matcher(textoMensagem);
-        Matcher tchau = Pattern.compile("\\b(?:tchau|adeus|txau|ate mais|fim|sair|encerrar)\\b").matcher(textoMensagem);
+        Matcher desculpa = Pattern.compile("\\b(?:foi mal|desculpe|desculpas|sorry)\\b").matcher(textoMensagem);
+        Matcher tchau = Pattern
+                .compile("\\b(?:tchau|adeus|txau|ate mais|fim|sair|encerrar|vou saindo|ate a proxima)\\b")
+                .matcher(textoMensagem);
 
         if (ola.find()) {
             resposta = "\u2601 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida! "
@@ -244,10 +258,12 @@ public class UtilsBot {
             resposta = askGenero(textoMensagem);
         } else if (idade.find()) {
             resposta = askAge();
+        } else if (desculpa.find()) {
+            resposta = sendSorry();
         } else if (tchau.find()) {
             resposta = askTchau();
         } else {
-            resposta = "Não entendi!\nPoderia repetir a pergunta novamente?";
+            resposta = "\u2601 Não entendi!\nPoderia repetir a pergunta novamente?";
         }
 
         return SendMessage.builder()
