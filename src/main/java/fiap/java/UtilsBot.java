@@ -161,7 +161,7 @@ public class UtilsBot {
         Matcher animacao = Pattern.compile("\\b(?:animacao|desenho|animado|animacoes)\\b").matcher(genero);
         Matcher acao = Pattern.compile("\\b(?:acao)\\b").matcher(genero);
         String resposta;
-
+        
         if (suspense.find()) {
             resposta = "\u2022 Órfã 2: A Origem\n\u2022 Não! Não Olhe!\n\u2022 Não Se Preocupe, Querida\n\u2022 A Queda\n\u2022 Amsterdam\n\u2022 Caça Implacável";
         } else if (terror.find()) {
@@ -177,6 +177,15 @@ public class UtilsBot {
         }
         solicitouFilmes = false;
         return resposta;
+    }
+    
+    /**
+     * Retorna resposta malcriada para pergunta da idade
+     *           
+     * @return
+     */
+    public static String askAge() {
+        return "Isso não é algo que você deveria perguntar à uma dama";
     }
 
     /**
@@ -217,8 +226,5 @@ public class UtilsBot {
                 .build();
     }
 
-    public static String askAge() {
-        return "Isso não é algo que você deveria perguntar à uma dama";
-    }
 
 }
