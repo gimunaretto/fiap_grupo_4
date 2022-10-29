@@ -105,7 +105,7 @@ public class UtilsBot {
         try {
             JSONObject enderecoIP = readJsonFromUrl("https://ipinfo.io/json");
 
-            ipCidade = removerAcentos( enderecoIP.getString("city")).toLowerCase();
+            ipCidade = removerAcentos(enderecoIP.getString("city")).toLowerCase();
 
             JSONObject temperaturaAtual = readJsonFromUrl(
                     "http://api.openweathermap.org/data/2.5/weather?q=" + ipCidade
@@ -161,7 +161,7 @@ public class UtilsBot {
         Matcher animacao = Pattern.compile("\\b(?:animacao|desenho|animado|animacoes)\\b").matcher(genero);
         Matcher acao = Pattern.compile("\\b(?:acao)\\b").matcher(genero);
         String resposta;
-        
+
         if (suspense.find()) {
             resposta = "\u2022 Órfã 2: A Origem\n\u2022 Não! Não Olhe!\n\u2022 Não Se Preocupe, Querida\n\u2022 A Queda\n\u2022 Amsterdam\n\u2022 Caça Implacável";
         } else if (terror.find()) {
@@ -178,14 +178,23 @@ public class UtilsBot {
         solicitouFilmes = false;
         return resposta;
     }
-    
+
     /**
      * Retorna resposta malcriada para pergunta da idade
-     *           
+     * 
      * @return
      */
     public static String askAge() {
         return "Isso não é algo que você deveria perguntar à uma dama";
+    }
+
+    /**
+     * Mensagem de despedida da Wendy
+     * 
+     * @return
+     */
+    public static String askTchau() {
+        return "Adorei conversar com você! Até a próxima S2";
     }
 
     /**
@@ -202,6 +211,7 @@ public class UtilsBot {
         Matcher horas = Pattern.compile("\\b(?:horas|hora|hor(a|à)rio)\\b").matcher(textoMensagem);
         Matcher filme = Pattern.compile("\\b(?:filme|cartaz|cinema|filmes)\\b").matcher(textoMensagem);
         Matcher idade = Pattern.compile("\\b(?:idade|ano|anos)\\b").matcher(textoMensagem);
+        Matcher tchau = Pattern.compile("\\b(?:tchau|adeus|txau|ate mais|fim|sair|encerrar)\\b").matcher(textoMensagem);
 
         if (ola.find()) {
             resposta = "\u2601 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida! "
@@ -215,7 +225,9 @@ public class UtilsBot {
             resposta = askGenero(textoMensagem);
         } else if (idade.find()) {
             resposta = askAge();
-             
+
+        } else if (tchau.find()) {
+            resposta = askTchau();
         } else {
             resposta = "Não entendi!\nPoderia repetir a pergunta novamente?";
         }
@@ -225,6 +237,5 @@ public class UtilsBot {
                 .chatId(chatId)
                 .build();
     }
-
 
 }
