@@ -99,6 +99,7 @@ public class UtilsBot {
     /**
      * Realiza as chamadas nas apis para adquirir o IP da máquina e a
      * temperatura atual de acordo com a cidade do response do IP
+     * Retorna a resposta com os dados das chamadas
      * 
      * @return
      */
