@@ -27,6 +27,8 @@ public class UtilsBot {
 
     /**
      * @param str
+     *            Remove acentos e normaliza as strings para serem usadas em outros
+     *            métodos
      * @return
      */
     public static String removerAcentos(String str) {
@@ -52,7 +54,6 @@ public class UtilsBot {
     }
 
     /**
-     * @param update
      * @return
      */
     public static String getDiaSemana() {
@@ -75,6 +76,7 @@ public class UtilsBot {
 
     /**
      * @param url
+     *            Transforma o json recebido da url em JSONObject
      * @return
      * @throws IOException
      * @throws JSONException
@@ -94,6 +96,9 @@ public class UtilsBot {
     }
 
     /**
+     * Realiza as chamadas nas apis para adquirir o IP da máquina e a
+     * temperatura atual de acordo com a cidade do response do IP
+     * 
      * @return
      */
     public static String sendWeather() {
@@ -131,6 +136,16 @@ public class UtilsBot {
      */
     public static String sendHours() {
         return "Hoje é " + getDiaSemana() + ", e são: " + getHora();
+    }
+
+    /**
+     * @return
+     */
+    public static String sendWeek() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        String dt_atual = formatter.format(new Date());
+        return "Hoje é " + LocalDate.now().getDayOfWeek().getDisplayName(TextStyle.FULL, new Locale("pt")) + ", "
+                + dt_atual;
     }
 
     /**
@@ -209,6 +224,7 @@ public class UtilsBot {
         Matcher ola = Pattern.compile("\\b(?:ol(a|à)|oi|start)\\b").matcher(textoMensagem);
         Matcher temperatura = Pattern.compile("\\b(?:tempo|clima|temperatura)\\b").matcher(textoMensagem);
         Matcher horas = Pattern.compile("\\b(?:horas|hora|hor(a|à)rio)\\b").matcher(textoMensagem);
+        Matcher dia = Pattern.compile("\\b(?:dia|hoje)\\b").matcher(textoMensagem);
         Matcher filme = Pattern.compile("\\b(?:filme|cartaz|cinema|filmes)\\b").matcher(textoMensagem);
         Matcher idade = Pattern.compile("\\b(?:idade|ano|anos)\\b").matcher(textoMensagem);
         Matcher tchau = Pattern.compile("\\b(?:tchau|adeus|txau|ate mais|fim|sair|encerrar)\\b").matcher(textoMensagem);
@@ -221,11 +237,12 @@ public class UtilsBot {
             resposta = sendWeather();
         } else if (horas.find()) {
             resposta = sendHours();
+        } else if (dia.find()) {
+            resposta = sendWeek();
         } else if ((filme.find() || solicitouFilmes)) {
             resposta = askGenero(textoMensagem);
         } else if (idade.find()) {
             resposta = askAge();
-
         } else if (tchau.find()) {
             resposta = askTchau();
         } else {
