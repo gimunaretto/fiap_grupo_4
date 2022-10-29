@@ -105,7 +105,7 @@ public class UtilsBot {
         try {
             JSONObject enderecoIP = readJsonFromUrl("https://ipinfo.io/json");
 
-            ipCidade = enderecoIP.getString("city");
+            ipCidade = removerAcentos( enderecoIP.getString("city")).toLowerCase();
 
             JSONObject temperaturaAtual = readJsonFromUrl(
                     "http://api.openweathermap.org/data/2.5/weather?q=" + ipCidade
