@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.Normalizer;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -21,6 +22,16 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 public class UtilsBot {
+
+    static boolean solicitouFilmes = false;
+
+    /**
+     * @param str
+     * @return
+     */
+    public static String removerAcentos(String str) {
+        return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+    }
 
     /**
      * @return
@@ -123,17 +134,64 @@ public class UtilsBot {
     }
 
     /**
+     * @param textoMensagem
+     *                      Perguntando qual o genero desejado, caso ja tenha
+     *                      informado, chama funcao sendFilmes
+     * @return
+     */
+    public static String askGenero(String textoMensagem) {
+        if (!solicitouFilmes) {
+            solicitouFilmes = true;
+            return "Qual genero você deseja buscar? Tente algo como, Terror, Comédia, Suspense, Animação, Ação";
+        } else {
+            return sendFilmes(textoMensagem);
+        }
+    }
+
+    /**
+     * @param genero
+     *               Retorna lista de filmes de acordo com genero passado por
+     *               parametro
+     * @return
+     */
+    public static String sendFilmes(String genero) {
+        Matcher suspense = Pattern.compile("\\b(?:suspense)\\b").matcher(genero);
+        Matcher terror = Pattern.compile("\\b(?:terror)\\b").matcher(genero);
+        Matcher comedia = Pattern.compile("\\b(?:comedia)\\b").matcher(genero);
+        Matcher animacao = Pattern.compile("\\b(?:animacao|desenho|animado|animacoes)\\b").matcher(genero);
+        Matcher acao = Pattern.compile("\\b(?:acao)\\b").matcher(genero);
+        String resposta;
+
+        if (suspense.find()) {
+            resposta = "\u2022 Órfã 2: A Origem\n\u2022 Não! Não Olhe!\n\u2022 Não Se Preocupe, Querida\n\u2022 A Queda\n\u2022 Amsterdam\n\u2022 Caça Implacável";
+        } else if (terror.find()) {
+            resposta = "\u2022 Halloween Ends\n\u2022 Morte, Morte, Morte\n\u2022 Sorria\n\u2022 Mostra Punk:Êra Punk\n\u2022 Mostra Punk: American Hardcore\n\u2022 Mostra Punk: A Volta dos Mortos-Vivo\n\u2022 O Fim do Mundo, Enfim\n\u2022 Juventude Decadente";
+        } else if (comedia.find()) {
+            resposta = "\u2022 Rir Para Não Chorar\n\u2022 Os Suburbanos - O Filme\n\u2022 Boa Sorte, Leo Grande\n\u2022 Ingresso Para o Paraíso\n\u2022 A Felicidade das Pequenas Coisas\n\u2022 Homens à Beira de Um Ataque de Nervos\n\u2022 Peter von Kant";
+        } else if (animacao.find()) {
+            resposta = "\u2022 As Aventuras de Tadeo e a Tábua de Esmeralda\n\u2022 Minions 2: A Origem de Gru\n\u2022 A Liga dos Superpets\n\u2022 One Piece Film: Red";
+        } else if (acao.find()) {
+            resposta = "\u2022 Tudo Em Todo O Lugar Ao Mesmo Tempo\n\u2022 A Mulher Rei\n\u2022 Caça Implacável\n\u2022 Adão Negro\n\u2022 Pantera Negra: Wakanda Para Sempre";
+        } else {
+            resposta = "Não encontrei o genero buscado :(\nPosso te auxiliar com outros generos caso queira...";
+        }
+        solicitouFilmes = false;
+        return resposta;
+    }
+
+    /**
      * @param update
      * @return
      */
     static SendMessage responseBot(Update update) {
-        String textoMensagem = update.getMessage().getText().toLowerCase();
+        String textoMensagem = removerAcentos(update.getMessage().getText().toLowerCase());
         String chatId = update.getMessage().getChatId().toString();
         String resposta = "";
 
         Matcher ola = Pattern.compile("\\b(?:ol(a|à)|oi|start)\\b").matcher(textoMensagem);
         Matcher temperatura = Pattern.compile("\\b(?:tempo|clima|temperatura)\\b").matcher(textoMensagem);
         Matcher horas = Pattern.compile("\\b(?:horas|hora|hor(a|à)rio)\\b").matcher(textoMensagem);
+        Matcher filme = Pattern.compile("\\b(?:filme|cartaz|cinema|filmes)\\b").matcher(textoMensagem);
 
         if (ola.find()) {
             resposta = "\u2601 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida! "
@@ -143,6 +201,8 @@ public class UtilsBot {
             resposta = sendWeather();
         } else if (horas.find()) {
             resposta = sendHours();
+        } else if ((filme.find() || solicitouFilmes)) {
+            resposta = askGenero(textoMensagem);
         } else {
             resposta = "Não entendi!\nPoderia repetir a pergunta novamente?";
         }
