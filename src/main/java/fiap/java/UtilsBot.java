@@ -105,7 +105,7 @@ public class UtilsBot {
         try {
             JSONObject enderecoIP = readJsonFromUrl("https://ipinfo.io/json");
 
-            ipCidade = enderecoIP.getString("city");
+            ipCidade = removerAcentos(enderecoIP.getString("city")).toLowerCase();
 
             JSONObject temperaturaAtual = readJsonFromUrl(
                     "http://api.openweathermap.org/data/2.5/weather?q=" + ipCidade
@@ -180,6 +180,24 @@ public class UtilsBot {
     }
 
     /**
+     * Retorna resposta malcriada para pergunta da idade
+     * 
+     * @return
+     */
+    public static String askAge() {
+        return "Isso não é algo que você deveria perguntar à uma dama";
+    }
+
+    /**
+     * Mensagem de despedida da Wendy
+     * 
+     * @return
+     */
+    public static String askTchau() {
+        return "Adorei conversar com você! Até a próxima S2";
+    }
+
+    /**
      * @param update
      * @return
      */
@@ -192,6 +210,8 @@ public class UtilsBot {
         Matcher temperatura = Pattern.compile("\\b(?:tempo|clima|temperatura)\\b").matcher(textoMensagem);
         Matcher horas = Pattern.compile("\\b(?:horas|hora|hor(a|à)rio)\\b").matcher(textoMensagem);
         Matcher filme = Pattern.compile("\\b(?:filme|cartaz|cinema|filmes)\\b").matcher(textoMensagem);
+        Matcher idade = Pattern.compile("\\b(?:idade|ano|anos)\\b").matcher(textoMensagem);
+        Matcher tchau = Pattern.compile("\\b(?:tchau|adeus|txau|ate mais|fim|sair|encerrar)\\b").matcher(textoMensagem);
 
         if (ola.find()) {
             resposta = "\u2601 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida! "
@@ -203,6 +223,11 @@ public class UtilsBot {
             resposta = sendHours();
         } else if ((filme.find() || solicitouFilmes)) {
             resposta = askGenero(textoMensagem);
+        } else if (idade.find()) {
+            resposta = askAge();
+
+        } else if (tchau.find()) {
+            resposta = askTchau();
         } else {
             resposta = "Não entendi!\nPoderia repetir a pergunta novamente?";
         }
