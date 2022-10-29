@@ -62,6 +62,7 @@ public class UtilsBot {
 
     /**
      * @param rd
+     *           Transforma o BufferedReader em string
      * @return
      * @throws IOException
      */
