@@ -192,6 +192,7 @@ public class UtilsBot {
         Matcher temperatura = Pattern.compile("\\b(?:tempo|clima|temperatura)\\b").matcher(textoMensagem);
         Matcher horas = Pattern.compile("\\b(?:horas|hora|hor(a|à)rio)\\b").matcher(textoMensagem);
         Matcher filme = Pattern.compile("\\b(?:filme|cartaz|cinema|filmes)\\b").matcher(textoMensagem);
+        Matcher idade = Pattern.compile("\\b(?:idade|ano|anos)\\b").matcher(textoMensagem);
 
         if (ola.find()) {
             resposta = "\u2601 Olá, eu sou a WENDY. Estou aqui para lhe auxiliar a entender o sentido da vida! "
@@ -203,6 +204,9 @@ public class UtilsBot {
             resposta = sendHours();
         } else if ((filme.find() || solicitouFilmes)) {
             resposta = askGenero(textoMensagem);
+        } else if (idade.find()) {
+            resposta = askAge();
+             
         } else {
             resposta = "Não entendi!\nPoderia repetir a pergunta novamente?";
         }
@@ -211,6 +215,10 @@ public class UtilsBot {
                 .text(resposta)
                 .chatId(chatId)
                 .build();
+    }
+
+    public static String askAge() {
+        return "Isso não é algo que você deveria perguntar à uma dama";
     }
 
 }
