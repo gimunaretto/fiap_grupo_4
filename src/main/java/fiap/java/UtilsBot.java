@@ -141,6 +141,8 @@ public class UtilsBot {
     }
 
     /**
+     * Traz o dia da semana e a data no formato BR
+     * 
      * @return
      */
     public static String sendWeek() {
