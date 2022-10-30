@@ -36,6 +36,8 @@ public class UtilsBot {
     }
 
     /**
+     * Retorna o data do dia formatada
+     * 
      * @return
      */
     public static String getData() {
@@ -47,6 +49,8 @@ public class UtilsBot {
     }
 
     /**
+     * Retorna a hora formatada
+     * 
      * @return
      */
     public static String getHora() {
@@ -134,6 +138,8 @@ public class UtilsBot {
     }
 
     /**
+     * Retorna resposta a pergunta das horas
+     * 
      * @return
      */
     public static String sendHours() {
@@ -229,6 +235,10 @@ public class UtilsBot {
 
     /**
      * @param update
+     *               Metodo responsável por interpretar as perguntas realizadas pelo
+     *               usuário, redirecionando-as aos metodos correspendentes de
+     *               acordo com o padrão criado pelo regex e enviando-as em forma de
+     *               resposta ao usuário
      * @return
      */
     static SendMessage responseBot(Update update) {
